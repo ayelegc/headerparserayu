@@ -9,8 +9,8 @@ var app = express();
 // /api/whoami endpoint
 app.get('/api/whoami', (req, res) => {
   try {
-    const ipaddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    const language = req.headers['accept-language'];
+    const ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
+    const language = req.headers['accept-language'] ? req.headers['accept-language'].split(',')[0] : 'en';
     const software = req.headers['user-agent'];
 
     res.json({
@@ -23,6 +23,7 @@ app.get('/api/whoami', (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 
 
