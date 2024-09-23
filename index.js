@@ -9,10 +9,16 @@ var app = express();
 // /api/whoami endpoint
 app.get('/api/whoami', (req, res) => {
   try {
-    const ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
-    const language = req.headers['accept-language'] ? req.headers['accept-language'].split(',')[0] : 'en';
+    // Ensure proper IP address retrieval. req.ip handles proxy cases.
+    const ipaddress = req.headers['x-forwarded-for'] || req.ip;
+
+    // Retrieve preferred language from the header
+    const language = req.headers['accept-language'];
+
+    // Retrieve software (user agent) from the headers
     const software = req.headers['user-agent'];
 
+    // Send the JSON response with the three required keys
     res.json({
       ipaddress,
       language,
@@ -23,9 +29,6 @@ app.get('/api/whoami', (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
-
-
 
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
